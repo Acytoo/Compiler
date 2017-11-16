@@ -30,42 +30,42 @@ CODE_SIZE = 0
 current_symbol_table_pos = 0
 current_symbol_index = 0
 CURRENT_CONDITION_NODE = None
-
+SYMBOL_TABLE = []
 
 # program 插入的语义动作
-def P11():
+def A11():
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['type'] = 'int'
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['length'] = 4
 
 
-def P12():
+def A12():
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['type'] = 'float'
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['length'] = 4
 
 
-def P13():
+def A13():
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['type'] = 'double'
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['length'] = 8
 
 
-def P14():
+def A14():
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['type'] = 'short'
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['length'] = 2
 
 
-def P15():
+def A15():
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['type'] = 'long'
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['length'] = 4
 
 
-def P21():
+def A21():
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['type'] = \
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.children[0].attr['type']
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.attr['length'] = \
     symbol_for_str(LAST_STACK_TOP_SYMBOL).father.children[0].attr['length']
 
 
-def P22():
+def A22():
     global current_symbol_table_pos
     global current_symbol_index
     s = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.children[0]
@@ -74,46 +74,46 @@ def P22():
     current_symbol_table_pos += s.attr['length']
 
 
-def P31():
+def A31():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     f.attr['name'] = f.children[1].lexical_value
 
 
-def P41():
+def A41():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     f.attr['type'] = 'int'
     f.attr['value'] = f.children[0].lexical_value
 
 
-def P42():
+def A42():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     f.attr['type'] = 'float'
     f.attr['value'] = float(f.children[0].lexical_value)
 
 
-def P43():
+def A43():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     f.attr['type'] = 'short'
     f.attr['value'] = f.children[0].lexical_value
 
 
-def P44():
+def A44():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     f.attr['type'] = 'long'
     f.attr['value'] = f.children[0].lexical_value
 
 
-def P51():
+def A51():
     pass
 
 
-def P52():
+def A52():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.father
     f.attr['type'] = f.children[0].attr['type']
     f.attr['value'] = f.children[0].attr['value']
 
 
-def P61():
+def A61():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     if len(f.children) < 3:
         f = f.father.father.father.father
@@ -144,57 +144,57 @@ def P61():
     fac.attr = {}
     code_output(lv.name + ' = ' + str(result))
 
+    QUAT_LIST.append(QuatWithAct('=', str(result), '_', lv.name))
 
 
 
-    '''
-
-    QUAT_LIST.append(QuatWithAct('=', ))
-
-
-    '''
-
-
-def P62():
+def A62():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.father.father.father
     f.attr['type'] = f.children[2].attr['type']
     f.attr['value'] = f.children[2].attr['value']
 
 
-def P71():
+def A71():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.father.father
     f.attr['type'] = f.children[0].attr['type']
     f.attr['value'] = f.children[0].attr['value']
 
 
-def P72():
+def A72():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.father.father
     f.attr['type'] = f.children[0].attr['type']
     f.attr['value'] = f.children[0].attr['value'] + 1
 
 
-def P73():
+def A73():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.father.father
     f.attr['type'] = f.children[0].attr['type']
     f.attr['value'] = f.children[0].attr['value'] - 1
 
-
-def P81():
+'''if'''
+def A81():
     global CURRENT_CONDITION_NODE
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     CURRENT_CONDITION_NODE = f
     e = f.children[2]
     code_output('IF ' + str(e.attr['value']) + ' GOTO ' + str(CODE_SIZE + 2))
     code_output(None)
+    QUAT_LIST.append(QuatWithAct('if', str(e.attr['value']), '_', '_'))
+
+    '''
+    if Quat
+    '''
+
     f.attr['back'] = CODE_SIZE - 1
 
 
-def P82():
+def A82():
     prev = CURRENT_CONDITION_NODE.attr['back']
     CODE_RESULT[prev] = 'GOTO ' + str(CODE_SIZE)
 
 
-def P91():
+'''While'''
+def A91():
     global CURRENT_CONDITION_NODE
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father
     CURRENT_CONDITION_NODE = f
@@ -204,19 +204,19 @@ def P91():
     f.attr['back'] = CODE_SIZE - 1
 
 
-def P92():
+def A92():
     prev = CURRENT_CONDITION_NODE.attr['back']
     CODE_RESULT[prev] = 'GOTO ' + str(CODE_SIZE + 1)
     code_output('GOTO ' + str(prev - 1))
 
 
-def P101():
+def A101():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.father.father.father
     f.attr['op'] = f.children[0].lexical_value
     f.attr['factor'] = f.children[1].attr['value']
 
 
-def P102():
+def A102():
     f = symbol_for_str(LAST_STACK_TOP_SYMBOL).father.father.father.father
     f.attr['op'] = f.children[0].lexical_value
     f.attr['factor'] = f.children[1].attr['value']
@@ -226,31 +226,31 @@ def no_action():
     pass
 
 
-SEMA_ACTION_TABLE['P11'] = P11
-SEMA_ACTION_TABLE['P12'] = P12
-SEMA_ACTION_TABLE['P13'] = P13
-SEMA_ACTION_TABLE['P14'] = P14
-SEMA_ACTION_TABLE['P15'] = P15
-SEMA_ACTION_TABLE['P21'] = P21
-SEMA_ACTION_TABLE['P22'] = P22
-SEMA_ACTION_TABLE['P31'] = P31
-SEMA_ACTION_TABLE['P41'] = P41
-SEMA_ACTION_TABLE['P42'] = P42
-SEMA_ACTION_TABLE['P43'] = P43
-SEMA_ACTION_TABLE['P44'] = P44
-SEMA_ACTION_TABLE['P51'] = P51
-SEMA_ACTION_TABLE['P52'] = P52
-SEMA_ACTION_TABLE['P61'] = P61
-SEMA_ACTION_TABLE['P62'] = P62
-SEMA_ACTION_TABLE['P71'] = P71
-SEMA_ACTION_TABLE['P72'] = P72
-SEMA_ACTION_TABLE['P73'] = P73
-SEMA_ACTION_TABLE['P81'] = P81
-SEMA_ACTION_TABLE['P82'] = P82
-SEMA_ACTION_TABLE['P91'] = P91
-SEMA_ACTION_TABLE['P92'] = P92
-SEMA_ACTION_TABLE['P101'] = P101
-SEMA_ACTION_TABLE['P102'] = P102
+SEMA_ACTION_TABLE['A11'] = A11
+SEMA_ACTION_TABLE['A12'] = A12
+SEMA_ACTION_TABLE['A13'] = A13
+SEMA_ACTION_TABLE['A14'] = A14
+SEMA_ACTION_TABLE['A15'] = A15
+SEMA_ACTION_TABLE['A21'] = A21
+SEMA_ACTION_TABLE['A22'] = A22
+SEMA_ACTION_TABLE['A31'] = A31
+SEMA_ACTION_TABLE['A41'] = A41
+SEMA_ACTION_TABLE['A42'] = A42
+SEMA_ACTION_TABLE['A43'] = A43
+SEMA_ACTION_TABLE['A44'] = A44
+SEMA_ACTION_TABLE['A51'] = A51
+SEMA_ACTION_TABLE['A52'] = A52
+SEMA_ACTION_TABLE['A61'] = A61
+SEMA_ACTION_TABLE['A62'] = A62
+SEMA_ACTION_TABLE['A71'] = A71
+SEMA_ACTION_TABLE['A72'] = A72
+SEMA_ACTION_TABLE['A73'] = A73
+SEMA_ACTION_TABLE['A81'] = A81
+SEMA_ACTION_TABLE['A82'] = A82
+SEMA_ACTION_TABLE['A91'] = A91
+SEMA_ACTION_TABLE['A92'] = A92
+SEMA_ACTION_TABLE['A101'] = A101
+SEMA_ACTION_TABLE['A102'] = A102
 SEMA_ACTION_TABLE['null'] = no_action
 
 def search_for_symbol(name):
@@ -258,6 +258,10 @@ def search_for_symbol(name):
         if e.name == name:
             return e
 
+
+def print_symbol_table():
+    for t in SYMBOL_TABLE:
+        print(t)
 
 def next_token():
     r = Lexer.scanner()
@@ -271,27 +275,42 @@ def control():
     SYMBOL_STACK.append('<s>')  # 《program》
 
     token_tuple = next_token()
+    # print('The first time to run', token_tuple)
+
 
     formulas = open('formulas.txt', 'w')
     stack = open('stack.txt', 'w')
+
+
     while len(SYMBOL_STACK) > 0:
         stack_top_symbol = SYMBOL_STACK[-1]
         while stack_top_symbol == 'null':
+            '''
+            空产生式，弹栈
+            '''
             SYMBOL_STACK.pop()
             stack_top_symbol = SYMBOL_STACK[-1]
 
-        if stack_top_symbol.startswith('P'):        # 语义动作
+        if stack_top_symbol.startswith('A'):        # 语义动作
+            '''
+            如果是语义动作， 就执行语义动作
+            '''
             do_sema_actions(stack_top_symbol)
             SYMBOL_STACK.pop()
             stack.write(str(SYMBOL_STACK) + '\n')
             continue
 
         current_token = token_tuple[0]
+        # print('\t3', current_token)
+        # print('2', token_tuple, '\t3', current_token)
+
         if current_token == 'OP' or current_token == 'SEP':
             current_token = token_tuple[1]
+        # print('2', token_tuple, '\t4', current_token)
 
         if current_token == 'EOF':
             current_token = '#'
+        # print('2', token_tuple, '\t5', current_token)
 
         if stack_top_symbol == 'null':
             LAST_STACK_TOP_SYMBOL = SYMBOL_STACK.pop()
@@ -301,14 +320,18 @@ def control():
             break
 
         if not is_terminal(stack_top_symbol):
+            '''
+            非终结符
+            '''
             try:
                 p = Analysis_Table[stack_top_symbol][current_token]
+                # print('In the try', p)
             except KeyError:
                 # Stack top symbol unmatched, ignore it
-                syntax_error('unmatched')
+                syntax_error('不匹配')
                 token_tuple = next_token()
                 continue
-
+            # print('after ', p.right)
             if p == 'SYNC':
                 # SYNC recognized, pop Stack
                 syntax_error("sync symbol, recovering")
@@ -320,10 +343,10 @@ def control():
             stack.write(str(SYMBOL_STACK) + '\n')
             formulas.write(str(p) + '\n')
             LAST_STACK_TOP_SYMBOL = SYMBOL_STACK.pop()
-            SYMBOL_STACK.extend(reversed(p.right))
+            SYMBOL_STACK.extend(reversed(p.right))  # 反序压栈
             symbol_for_str((LAST_STACK_TOP_SYMBOL)).children = []
             for symbol in p.right:
-                if symbol.startswith('P'):
+                if symbol.startswith('A'):
                     symbol_for_str(LAST_STACK_TOP_SYMBOL).children.append(symbol)
                     continue
 
@@ -374,5 +397,5 @@ if __name__ == '__main__':
     print("------------")
     print_code_result()
     print('Withour Deal\n\n')
-    print(CODE_RESULT)
+    # print(CODE_RESULT)
     #prettyprint_parsing_table()

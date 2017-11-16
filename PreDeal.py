@@ -20,9 +20,13 @@ FORMULA_LIST = []
 
 Analysis_Table = {}
 
-SYMBOL_TABLE = []
+
 
 def symbol_for_str(string):
+    '''
+    返回关于这个符号的信息
+    '''
+    # print(string, '\t', SYMBOL_DICT[string])
     return SYMBOL_DICT[string]
 
 
@@ -98,7 +102,7 @@ def Deduce_Empty():
                     # For X -> Y1 ... YN, Nullable(X) = Nullable(Y1) &
                     # Nullable(Y2) ... & Nullable(YN)
                     for r in p.right[1:]:
-                        if r.startswith('P'):
+                        if r.startswith('A'):
                             continue
                         right_is_nullable = right_is_nullable & symbol_for_str(
                             r).is_nullable
@@ -172,7 +176,7 @@ def Gen_Follow():
             for s in p.right:
                 if s == 'null':
                     continue
-                if s.startswith('P'):
+                if s.startswith('A'):
                     continue
                 if symbol_for_str(s).is_terminal():
                     continue
@@ -180,7 +184,7 @@ def Gen_Follow():
                 previous_follow_set = set(current_symbol.follow_set)
                 next_is_nullable = True
                 for s2 in p.right[p.right.index(s) + 1:]:
-                    if s2.startswith('P'):
+                    if s2.startswith('A'):
                         continue
                     # For X -> sYt, Follow(Y) = Follow(Y) U First(t)
                     next_symbol = symbol_for_str(s2)
@@ -233,7 +237,7 @@ def Gen_Ana_Table():
     """
     global Analysis_Table
     for non_terminal in NON_TERMINAL_SET:
-        if non_terminal.startswith('P'):
+        if non_terminal.startswith('A'):
             continue
         Analysis_Table[non_terminal] = {}
         for p in FORMULA_LIST:
@@ -245,9 +249,11 @@ def Gen_Ana_Table():
 
         for symbol in symbol_for_str(non_terminal).follow_set:
             if is_terminal(symbol):
+                # print(symbol)
                 try:
                     p = Analysis_Table[non_terminal][symbol]
                 except KeyError:
+                    # print(symbol, '1111111111111111111111111111111111111111111111111111111')
                     Analysis_Table[non_terminal][symbol] = 'SYNC'
 
         for symbol in symbol_for_str(non_terminal).first_set:
@@ -255,12 +261,10 @@ def Gen_Ana_Table():
                 try:
                     p = Analysis_Table[non_terminal][symbol]
                 except KeyError:
+                    # print('2222222222222222222222222222222222222222222222222222222222')
                     Analysis_Table[non_terminal][symbol] = 'SYNC'
 
 
-def print_symbol_table():
-    for t in SYMBOL_TABLE:
-        print(t)
 
 def Pre_Deal():
     '''
@@ -275,22 +279,26 @@ def Pre_Deal():
     Gen_Select()
     Gen_Ana_Table()
 
-def show_ana_tab():
-    for i in Analysis_Table:
-        print(i)
-def prettyprint_parsing_table():
+def show_ana_table():
     for non_terminal in Analysis_Table.keys():
         symbol_to_production_list = []
         for symbol in Analysis_Table[non_terminal]:
+            print('symbol: ', symbol)
             p = Analysis_Table[non_terminal][symbol]
             symbol_to_production = str(symbol) + ':' + str(p)
             symbol_to_production_list.append(symbol_to_production)
 
         print(non_terminal)
         print(symbol_to_production_list)
+        print('\n\n')
 
 if __name__ == '__main__':
     Pre_Deal()
+    print('\n\n\n')
     # Lexer.read_source_file('1.c')
     # show_ana_tab()
-    # prettyprint_parsing_table()
+    # show_ana_table()
+    # print(Analysis_Table[0])
+    for i in Analysis_Table:
+        print(i)
+        print(Analysis_Table[i], '\n')

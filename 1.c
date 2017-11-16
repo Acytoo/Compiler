@@ -4,8 +4,10 @@ int main() {
     int a;
     float b;
     int c;
+    int c ;
     float e;
     c=10;
+    c = 11;
 
     a=9;/*sdfgsdfg*/
     //adgfadga
@@ -16,7 +18,7 @@ int main() {
 
 //￥￥
     if(c) {
-        a = 1 + 10;
+        a = 1 + 10+ 'int';
         b = 10.9 + 8.9;
     }
     b = 1.11 * 8.9;

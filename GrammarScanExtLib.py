@@ -28,7 +28,7 @@ class Symbol():
         self.lexical_value = None
 
     def __str__(self):
-        return self.symbol + ' Derive_empty:' + str(self.is_nullable) + ' First:' + str(self.first_set) + ' Follow:' + str(self.follow_set)
+        return self.symbol + ' Deduce_empty:' + str(self.is_nullable) + ' First:' + str(self.first_set) + ' Follow:' + str(self.follow_set)
 
     def is_terminal(self):
         return self.sym_type == 'T'
@@ -48,7 +48,7 @@ class QuatWithAct():
     带有活动信息的四元式
     (op, dest(Activity), source(Activity), res(Activity))
     '''
-    def __init__(self, op, d, da=True, s, sa=True, r, ra=True):
+    def __init__(self, op, d, s, r, da=True, sa=True, ra=True):
         self.op = op
         self.destination = d
         self.destActivity = da
