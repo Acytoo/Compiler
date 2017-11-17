@@ -29,19 +29,22 @@ class Symbol():
 
     def __str__(self):
         return self.symbol + ' Deduce_empty:' + str(self.is_nullable) + ' First:' + str(self.first_set) + ' Follow:' + str(self.follow_set)
+        # return self.symbol + ' father ' + str(self.father) + ' children '+ self.children + ' value ' + self.lexical_value
 
     def is_terminal(self):
         return self.sym_type == 'T'
 
 
-class Entry():
-    def __init__(self, type, length, name):
+class INFO():
+    def __init__(self, type, length, name, pos):
         self.type = type
         self.length = length
         self.name = name
+        self.pos = pos
 
     def __str__(self):
-        return self.name + ' ' + self.type + ' ' + str(self.length)
+        return ("名字%-10s类型%-7s在数据块起始位置%-7s所占长度%-7s"%(self.name, self.type, str(self.pos), str(self.length)))
+        # return self.name + ' ' + self.type + ' ' + str(self.pos) + ' '+ str(self.length)
 
 class QuatWithAct():
     '''
@@ -57,4 +60,4 @@ class QuatWithAct():
         self.result = r
         self.resActivity = ra
     def __str__(self):
-        return '( '+ str(self.op)+ str(self.destination)+ str(self.source)+ str(self.result)+ ')'
+        return '( '+ str(self.op)+ ' '+ str(self.destination)+ ' '+ str(self.source)+ ' '+ str(self.result)+ ' )'

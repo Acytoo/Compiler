@@ -479,7 +479,6 @@ def show_Quat():
     for i in QUAT_DICT:
         print(QUAT_DICT[i])
 if __name__ == '__main__':
-    # print(__package__)
     Pre_Deal()      # 读取文法， 可以考虑将扫描的文法分析表保存， 以欧化结构， 加快速度
     Lexer.read_source_file('1.c')   # 读取要分析的文件
     control()

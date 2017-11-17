@@ -36,7 +36,7 @@ def is_terminal(string):
 
 def Scan_Grammar():
 
-    f = open('grammer.txt', 'r', encoding='utf8')
+    f = open('grammar.ytini', 'r', encoding='utf8')
     lines = f.readlines()
     terminal = False
     formula = False
@@ -53,7 +53,7 @@ def Scan_Grammar():
             terminal = True
             formula = False
             continue
-        if line.strip() == '*productions':
+        if line.strip() == '*formulas':
             terminal = False
             formula = True
             continue
@@ -99,8 +99,6 @@ def Deduce_Empty():
                     continue
                 else:
                     right_is_nullable = symbol_for_str(p.right[0]).is_nullable
-                    # For X -> Y1 ... YN, Nullable(X) = Nullable(Y1) &
-                    # Nullable(Y2) ... & Nullable(YN)
                     for r in p.right[1:]:
                         if r.startswith('A'):
                             continue
@@ -118,7 +116,6 @@ def Gen_First():
     @acytoo
     '''
     for s in TERMINAL_SET:
-        # For each terminal, initialize First with itself.
         sym = SYMBOL_DICT[s]
         sym.first_set = set([s])
 
@@ -139,11 +136,8 @@ def Gen_First():
             previous_first_set = set(sym_left.first_set)
 
             for s in p.right:
-                # For X -> Y..., First(X) = First(X) U First(Y)
                 sym_right = symbol_for_str(s)
                 sym_left.first_set.update(sym_right.first_set)
-                # For X -> Y1 Y2 ... Yi-1 , if Y1...Yi-1 is all nullable
-                # Then First(X) = First(X) U First(Y1) U First(Y2) ...
                 if sym_right.is_nullable:
                     continue
                 else:
@@ -165,7 +159,7 @@ def Gen_Follow():
         sym = symbol_for_str(s)
         sym.follow_set = set()
 
-    symbol_for_str('<s>').follow_set.update(set(['#']))
+    symbol_for_str('<program>').follow_set.update(set(['#']))
 
     while True:
         follow_set_is_stable = True
@@ -186,7 +180,6 @@ def Gen_Follow():
                 for s2 in p.right[p.right.index(s) + 1:]:
                     if s2.startswith('A'):
                         continue
-                    # For X -> sYt, Follow(Y) = Follow(Y) U First(t)
                     next_symbol = symbol_for_str(s2)
                     current_symbol.follow_set.update(next_symbol.first_set)
                     if next_symbol.is_nullable:
@@ -195,8 +188,6 @@ def Gen_Follow():
                         next_is_nullable = False
                         break
                 if next_is_nullable:
-                    # For X -> sYt, if t is nullable, Follow(Y) = Follow(Y) U
-                    # Follow(X)
                     current_symbol.follow_set.update(sym_left.follow_set)
 
                 if current_symbol.follow_set != previous_follow_set:
@@ -216,13 +207,10 @@ def Gen_Select():
             sym_left = symbol_for_str(p.left)
             previous_select = set(p.select)
             if p.right[0] == 'null':
-                # For A -> a, if a is null, Select(i) = Follow(A)
                 p.select.update(sym_left.follow_set)
                 continue
             sym_right = symbol_for_str(p.right[0])
-            # Otherwise, Select(i) = First(a)
             p.select.update(sym_right.first_set)
-            # If a is nullable, Select(i) = First(a) U Follow(A)
             if sym_right.is_nullable:
                 p.select.update(sym_right.first_set.union(sym_left.follow_set))
             if previous_select != p.select:
@@ -244,7 +232,6 @@ def Gen_Ana_Table():
             if non_terminal == p.left:
                 for symbol in p.select:
                     Analysis_Table[non_terminal][symbol] = p
-        # Calculate SYNC
 
 
         for symbol in symbol_for_str(non_terminal).follow_set:
@@ -295,10 +282,6 @@ def show_ana_table():
 if __name__ == '__main__':
     Pre_Deal()
     print('\n\n\n')
-    # Lexer.read_source_file('1.c')
-    # show_ana_tab()
-    # show_ana_table()
-    # print(Analysis_Table[0])
     for i in Analysis_Table:
         print(i)
         print(Analysis_Table[i], '\n')

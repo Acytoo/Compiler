@@ -79,7 +79,7 @@ CATEGORY_DICT = {
 current_column = -1
 current_row = 0
 Sfile_content = []  # 源文件内容， 二维list, 行读取
-
+ERR_MSG = []
 
 def is_keyword(s):
     return s in KEYWORD_LIST
@@ -118,12 +118,15 @@ def read_source_file(file):
 
 
 def lexical_error(msg, row=None, column=None):
+    global current_row
+    global current_column
+    global ERR_MSG
     if row is None:
         row = current_row + 1
     if column is None:
         column = current_column + 1
-    print('在%d行%d列出现了%s的错误' % (row, column, msg))
-    # print(str(row) + ':' + str(column) + ' Lexical error: ' + msg)
+    # print('在%d行%d列出现了%s的错误' % (row, column, msg))
+    ERR_MSG.append('词法错误：在%d行%d列出现了%s的词法错误' % (row, column, msg))
 
 def getchar():
     global current_column
@@ -138,12 +141,22 @@ def getchar():
 
 
 def scanner():
+    global current_row
+    global current_column
     '''
     扫描器第三版， 连续判断， 效率高， 去除状态跳转
     方便修改
     '''
     current_char = getchar()
     # print('\t\t\tcurrent char', [current_char])
+    if current_char == '#':
+        '''
+        不支持引用头文件， 宏定义等。可以说明一下， 比如显示“饮用了某个头文件，
+        宏定义了什么等”，但对生成汇编代码没有帮助， 所以这里就先跳过了
+        '''
+        current_row += 1
+        current_column = 0
+        return None
     if current_char == 'EOF':
         return ('EOF', '', '')
     if current_char.strip() == '':
@@ -182,8 +195,6 @@ def scanner():
 
     if current_char == '\"':
         str_literal = ''
-        global current_row
-        global current_column
         row = current_row + 1
         column = current_column + 1
 
