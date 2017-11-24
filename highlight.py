@@ -1,7 +1,6 @@
 
 from PyQt5.QtCore import QFile, QRegExp, Qt
 from PyQt5.QtGui import QFont, QSyntaxHighlighter, QTextCharFormat
-#from ui_pyqt5.edit import customcompleter_rc
 '''
 QSyntaxHighlighter
 只是  词  法高亮， 语法高亮未完成。。。。。。。。。
@@ -17,14 +16,14 @@ class Highlighter(QSyntaxHighlighter):
         '''
         加粗
         '''
-        keywordPatterns = ["\\bchar\\b", "\\bclass\\b", "\\bconst\\b",
+        keywordPatterns = ["\\bchar\\b", "\\bclass\\b", "\\bconst\\b","\\bfloat\\b",
                            "\\bdouble\\b", "\\benum\\b", "\\bexplicit\\b", "\\bfriend\\b",
                            "\\binline\\b", "\\bint\\b", "\\blong\\b", "\\bnamespace\\b",
                            "\\bpublic\\b", "\\bshort\\b", "\\bsignals\\b", "\\bsigned\\b",
                            "\\bslots\\b", "\\bstatic\\b", "\\bstruct\\b",
                            "\\btemplate\\b", "\\btypedef\\b", "\\btypename\\b",
                            "\\bunion\\b", "\\bunsigned\\b", "\\bvirtual\\b", "\\bvoid\\b",
-                           "\\bvolatile\\b", "\\bif\\b", "\\bacytoo\\b"]
+                           "\\bvolatile\\b", "\\bif\\b", "\\bacytoo\\b", "\\binclude\\b"]
 
         self.highlightingRules = [(QRegExp(pattern), keywordFormat)
                 for pattern in keywordPatterns]

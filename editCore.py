@@ -7,6 +7,10 @@ from highlight import Highlighter
 调用了QCompleter, 不知道有没有起作用。。。。
 参考文章地址：http://blog.sina.com.cn/s/blog_a6fb6cc90101gu7w.html
 2017年11月17日12点56分
+
+自动补全已经工作了， 是因为文件相对地址打错了。。。。。
+2017年11月18日17点18分
+
 @acytoo
 '''
 
@@ -96,7 +100,7 @@ class TextEdit(QTextEdit):
     def setup_completer(self):
 
         self.completer = QCompleter(self)
-        self.completer.setModel(self.modelFromFile(':/resources/wordlist.txt'))
+        self.completer.setModel(self.modelFromFile('./resources/wordlist.txt'))
         self.completer.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
         self.completer.setCaseSensitivity(Qt.CaseInsensitive)
         self.completer.setWrapAround(False)

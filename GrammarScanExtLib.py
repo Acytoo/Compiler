@@ -43,8 +43,8 @@ class INFO():
         self.pos = pos
 
     def __str__(self):
-        return ("名字%-10s类型%-7s在数据块起始位置%-7s所占长度%-7s"%(self.name, self.type, str(self.pos), str(self.length)))
-        # return self.name + ' ' + self.type + ' ' + str(self.pos) + ' '+ str(self.length)
+        # return ("%-7s%-7s%-7s%-7s"%(self.name, self.type, str(self.pos), str(self.length)))
+        return self.name + '\t' + self.type + '\t\t' + str(self.pos) + '\t\t'+ str(self.length)
 
 class QuatWithAct():
     '''

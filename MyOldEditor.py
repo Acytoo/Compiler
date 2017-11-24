@@ -7,7 +7,6 @@ from editCore import TextEdit
 
 __version__ = "2.0.0"
 '''
-自动补全还是不行， 暂时先放下了
 2017年11月17日12点30分
 @acytoo
 '''

@@ -1,0 +1,22 @@
+<program> -> ['<translation_unit>'] Select: {'long', 'int', 'short', '#', 'float', 'double', 'null'}
+<translation_unit> -> ['<external_declaration>', '<translation_unit>'] Select: {'long', 'int', 'short', 'float', 'double'}
+<external_declaration> -> ['<func_declaration>'] Select: {'long', 'int', 'short', 'float', 'double'}
+<func_declaration> -> ['<declaration_specifiers>', '<declarator>', '<declaration_list>', '<compound_stmt>'] Select: {'long', 'int', 'short', 'float', 'double'}
+<declaration_specifiers> -> ['<type_specifier>', 'ID', 'A31'] Select: {'long', 'int', 'short', 'float', 'double'}
+<type_specifier> -> ['int', 'A11'] Select: {'int'}
+<declarator> -> ['null'] Select: {'long', ')', 'int', 'short', '{', 'float', 'double', 'null'}
+<declaration_list> -> ['<declaration>', 'A22', '<declaration_list>'] Select: {'long', 'int', 'short', 'float', 'double'}
+<declaration> -> ['<declaration_specifiers>', 'A21', ';'] Select: {'long', 'int', 'short', 'float', 'double'}
+<declaration_specifiers> -> ['<type_specifier>', 'ID', 'A31'] Select: {'long', 'int', 'short', 'float', 'double'}
+<type_specifier> -> ['int', 'A11'] Select: {'int'}
+<declaration_list> -> ['<declaration>', 'A22', '<declaration_list>'] Select: {'long', 'int', 'short', 'float', 'double'}
+<declaration> -> ['<declaration_specifiers>', 'A21', ';'] Select: {'long', 'int', 'short', 'float', 'double'}
+<declaration_specifiers> -> ['<type_specifier>', 'ID', 'A31'] Select: {'long', 'int', 'short', 'float', 'double'}
+<type_specifier> -> ['int', 'A11'] Select: {'int'}
+<declaration_list> -> ['<declaration>', 'A22', '<declaration_list>'] Select: {'long', 'int', 'short', 'float', 'double'}
+<declaration> -> ['<declaration_specifiers>', 'A21', ';'] Select: {'long', 'int', 'short', 'float', 'double'}
+<declaration_specifiers> -> ['<type_specifier>', 'ID', 'A31'] Select: {'long', 'int', 'short', 'float', 'double'}
+<type_specifier> -> ['float', 'A12'] Select: {'float'}
+<declaration_list> -> ['null'] Select: {'}', ';', 'ID', '{', 'if', 'while', 'null'}
+SYNC
+<translation_unit> -> ['null'] Select: {'#'}

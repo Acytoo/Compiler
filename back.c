@@ -1,17 +1,11 @@
-# include <stdio.h>
 
 int main() {
     // 因为不支持头文件引入， 所以没有加入include的判断， 如果要求可以判断# include开头就跳过这一行
     int a;
     float b;
     int c;
-    double ch ;
-    float c;
+    float e;
     c=10;
-    c = 11;
-    a=1;
-    a = 1;
-
 
     a=9;/*sdfgsdfg*/
     //adgfadga
@@ -21,17 +15,14 @@ int main() {
     sgsdfgdfg*/
 
 //￥￥
-    //c = a > b;
     if(c) {
-        //a > 100000;
         a = 1 + 10;
-        a = 12 / 3;
-        //b = 1.1 + 2.2;
+        b = 10.9 + 8.9;
     }
-    b = 3.7 * 1.3;
+    b = 1.11 * 8.9;
     while(a) {
         b = 10.44;
-        e = 37.13;
+        e = 990.45;
         c = 90;
     }
     c = 80;

@@ -2,226 +2,108 @@ import sys
 from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import (QApplication, QGridLayout, QTextEdit, QWidget, QFrame,
                              QPushButton, QTableWidget, QLineEdit,  QAbstractItemView,
-                             QMessageBox, QTableWidgetItem, QFileDialog)
+                             QMessageBox, QTableWidgetItem, QFileDialog, QLabel)
+
 from Parser import *
 
-'''
-11111111111111123555555555555555555555555555555565
-'''
-# from logic.Forecast import Forecasting
 
-ter_list = ['a', 'c', 'y', 't', 'o', 'o']
 class AnaUI(QFrame):
-    pre_forecasting = None
     filename = ''
-    def __init__(self, filename=None):
+    def __init__(self, fname=None):
+        Pre_Deal()
         super(AnaUI, self).__init__()
-        self.filename = filename
+        self.filename = fname
+        # print('int ', self.filename)
 
-        self.pre_op_widget = QWidget(self)
+        self.grid = QGridLayout()
+        self.grid.setSpacing(10)
 
-        self.open_file_btn = QPushButton(self.pre_op_widget, text="Open")
-        self.ok_grammar_btn = QPushButton(self.pre_op_widget, text="OK")
-        self.follow_btn = QPushButton(self.pre_op_widget, text="Fillow")
-        self.first_btn = QPushButton(self.pre_op_widget, text="First")
-        self.create_pre_table = QPushButton(self.pre_op_widget, text="Create Tabel")
-        self.gird_op = QGridLayout()
+        self.token = QLabel("Token")
+        self.Key = QLabel("My Language")
+        self.symbol = QLabel("Symbol Table")
+        self.quat = QLabel("  Quat")
+        self.ass = QLabel("Assembly")
+        self.err = QLabel("Err Msg")
 
-        self.pre_widget_left = QWidget(self)
 
-        self.gird_w = QGridLayout()
-        self.pre_edit = QTextEdit(self.pre_widget_left)
-        self.pre_first_table = QTableWidget()
-        self.pre_first_table.resizeColumnsToContents()
-        self.pre_first_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.pre_first_table.setHorizontalHeaderLabels(['First'])
-        self.pre_follow_table = QTableWidget()
-        self.pre_follow_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.pre_follow_table.setHorizontalHeaderLabels(['Fallow'])
+        self.tokenEdit = QTextEdit()
+        self.keyEdit = QTextEdit()
+        self.symbolEdit = QTextEdit()
+        self.quatEdit = QTextEdit()
+        self.assEdit = QTextEdit()
+        self.errEdit = QTextEdit()
 
-        self.pre_widget_right = QWidget(self)
+        self.tokenEdit.setStyleSheet("font: 15pt Comic Sans MS")
+        self.keyEdit.setStyleSheet("font: 15pt Comic Sans MS")
+        self.symbolEdit.setStyleSheet("font: 15pt Comic Sans MS")
+        self.quatEdit.setStyleSheet("font: 15pt Comic Sans MS")
+        self.assEdit.setStyleSheet("font: 15pt Comic Sans MS")
+        self.errEdit.setStyleSheet("font: 15pt Comic Sans MS")
 
-        self.pre_pre_table = QTableWidget()
-        self.pre_pre_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.pre_pre_table.setHorizontalHeaderLabels(['预测表'])
-        self.pre_list = QTableWidget()
-        self.pre_list.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.pre_list.verticalHeader().setVisible(False)
-        self.pre_list.setColumnCount(4)
-        self.pre_list.setHorizontalHeaderLabels(['步骤', '符号栈', '输入串', '所用产生式'])
+        self.token.setStyleSheet("font: 13pt Comic Sans MS")
+        self.Key.setStyleSheet("font: 13pt Comic Sans MS")
+        self.symbol.setStyleSheet("font: 13pt Comic Sans MS")
+        self.quat.setStyleSheet("font: 13pt Comic Sans MS")
+        self.ass.setStyleSheet("font: 13pt Comic Sans MS")
+        self.err.setStyleSheet("font: 13pt Comic Sans MS")
+        self.init_ui()
+        self.run(self.filename)
 
-        self.pre_line_dit = QLineEdit("Input statement")
-        self.start_btn = QPushButton("Start")
-        self.start_step_btn = QPushButton("Next Step")
-        self.clear_all_btn = QPushButton("Clear")
-        self.gird_w_r = QGridLayout()
+    def init_ui(self):
 
-        self.gird_f = QGridLayout()
+        self.grid.addWidget(self.tokenEdit, 1, 0, 15, 5)
+        self.grid.addWidget(self.token, 0, 2)
+        self.grid.addWidget(self.keyEdit, 1, 6, 7, 10)
+        self.grid.addWidget(self.Key, 0, 10)
+        self.grid.addWidget(self.symbolEdit, 1, 17, 7, 10)
+        self.grid.addWidget(self.symbol, 0, 22)
+        self.grid.addWidget(self.quatEdit, 9, 6, 7, 10)
+        self.grid.addWidget(self.quat, 8, 10)
+        self.grid.addWidget(self.assEdit, 9, 17, 7, 10)
+        self.grid.addWidget(self.ass, 8, 22)
+        self.grid.addWidget(self.errEdit, 18, 0, 3, 27)
+        self.grid.addWidget(self.err, 17, 13)
 
-        self.set_layout()
-        self.set_action()
+        # self.tokenEdit.setText('fgsdfgsdfgsd')
 
-    def set_layout(self):
-        '''
-        self.gird_op.addWidget(self.open_file_btn, 0, 0)
-        self.gird_op.addWidget(self.ok_grammar_btn, 0, 1)
-        self.gird_op.addWidget(self.first_btn, 0, 2)
-        self.gird_op.addWidget(self.follow_btn, 0, 3)
-        self.gird_op.addWidget(self.create_pre_table, 0, 4)
-        self.pre_op_widget.setLayout(self.gird_op)
-        '''
-        self.gird_w.addWidget(self.pre_edit, 0, 0, 1, 2)
-        self.gird_w.addWidget(self.pre_first_table, 1, 0, 1, 2)
-        self.gird_w.addWidget(self.pre_follow_table, 2, 0, 1, 2)
-        self.pre_widget_left.setLayout(self.gird_w)
-        '''
-        self.gird_w_r.addWidget(self.pre_pre_table, 0, 0, 1, 4)
-        self.gird_w_r.addWidget(self.pre_line_dit, 1, 0, 1, 1)
-        self.gird_w_r.addWidget(self.start_btn, 1, 1, 1, 1)
-        self.gird_w_r.addWidget(self.start_step_btn, 1, 2, 1, 1)
-        self.gird_w_r.addWidget(self.clear_all_btn, 1, 3, 1, 1)
-        self.gird_w_r.addWidget(self.pre_list, 2, 0, 1, 4)
-        self.pre_widget_right.setLayout(self.gird_w_r)
-        '''
-        self.gird_f.addWidget(self.pre_op_widget, 0, 0, 1, 2)
-        self.gird_f.addWidget(self.pre_widget_left, 1, 0)
-        self.gird_f.addWidget(self.pre_widget_right, 1, 1)
-        self.gird_f.setColumnStretch(0, 1)
-        self.gird_f.setColumnStretch(1, 1)
-        self.setLayout(self.gird_f)
+        self.setLayout(self.grid)
 
-    def set_action(self):
-        self.open_file_btn.clicked.connect(self.pre_open_file)
-        self.ok_grammar_btn.clicked.connect(self.pre_ok_grammar)
-        self.first_btn.clicked.connect(self.pre_first_start)
-        self.follow_btn.clicked.connect(self.pre_follow_start)
-        self.create_pre_table.clicked.connect(self.pre_create_table)
-        self.start_step_btn.clicked.connect(self.pre_start_step)
-        self.start_btn.clicked.connect(self.pre_start_all)
-        self.clear_all_btn.clicked.connect(self.pre_clear_all)
+        self.setGeometry(30, 30, 1800, 999)
+        self.setWindowTitle("Result")
+        # self.show()
 
-    def pre_clear_all(self):
-        self.pre_list.clear()
-        self.pre_forecasting.analysis_init()
-        self.result = True
 
-    def pre_start_step(self):
-        try:
-            if self.pre_forecasting.analysis_text == '':
-                s = self.pre_line_dit.text()
-                self.pre_forecasting.set_analysis_text(s)
-                self.step_no = 0
-                self.result = True
-            if self.result:
-                info_str, self.result = self.pre_forecasting.analysis()
-                if info_str:
-                    self.pre_list.insertRow(self.step_no)
-                    self.pre_list.setItem(self.step_no, 0, QTableWidgetItem(str(self.step_no + 1)))
-                    self.pre_list.setItem(self.step_no, 1, QTableWidgetItem(str(self.pre_forecasting.sign_stack)))
-                    self.pre_list.setItem(self.step_no, 2, QTableWidgetItem(self.pre_forecasting.analysis_text[
-                                                                             self.pre_forecasting.exp_index::]))
-                    self.pre_list.setItem(self.step_no, 3, QTableWidgetItem(info_str))
-                    self.step_no += 1
-            return self.result
-        except Exception as e:
-            print(e)
-        return False
+    def run(self, name):
+        global ERR_MSG
+        global ASSEMBLY_CODE
+        global QUAT_DICT
+        global Token
+        global SYMBOL_TABLE
+        global CODE_RESULT
 
-    def pre_start_all(self):
-        while self.pre_start_step():
-            pass
+             # 读取文法， 可以考虑将扫描的文法分析表保存， 以欧化结构， 加快速度
+        Lexer.read_source_file(name)   # 读取要分析的文件
+        # print(name)
+        control(name)
+        # self.errEdit.setText('asdfas')
+        assem_code = open('./results/'+name.split('/')[-1].split('.')[0]+'.asm', 'w')
+        self.symbolEdit.append("名字\t类型\t在内存中的起始位置\t所占内存大小 ")
+        for i in ERR_MSG:
+            # print(i)
+            self.errEdit.append(i)
+        for i in ASSEMBLY_CODE:
+            self.assEdit.append(i)
+            assem_code.write(i+'\n')
+        for i in QUAT_DICT:
+            self.quatEdit.append(str(QUAT_DICT[i]))
+        for i in Token:
+            self.tokenEdit.append(str(i))
+        for i in SYMBOL_TABLE:
+            self.symbolEdit.append(str(i))
+        for i in CODE_RESULT:
+            self.keyEdit.append(str(CODE_RESULT.index(i)) + ': ' + i)
+        assem_code.close()
 
-    def pre_create_table(self):
-        try:
-            self.pre_forecasting.create_forecasting_table()
-            ter_list = self.pre_forecasting.grammar.terminal_symbol + ['#']
-            self.pre_pre_table.setColumnCount(len(ter_list))
-            self.pre_pre_table.setHorizontalHeaderLabels(ter_list)
-            self.pre_pre_table.setVerticalHeaderLabels(self.pre_forecasting.grammar.non_terminal_symbol)
-            for y, non in enumerate(self.pre_forecasting.grammar.non_terminal_symbol):
-                self.pre_pre_table.insertRow(y)
-                for x, ter in enumerate(ter_list):
-                    try:
-                        gar = self.pre_forecasting.forecast_table[non][ter]
-                        self.pre_pre_table.setItem(y, x, QTableWidgetItem(non + '->' + gar))
-                    except Exception as e:
-                        print(e)
-            self.pre_pre_table.resizeColumnsToContents()
-            self.pre_pre_table.resizeRowsToContents()
-        except Exception as e:
-            print(e)
-
-    def pre_first_start(self):
-        try:
-            self.pre_forecasting.get_first_set()
-            ter_list = self.pre_forecasting.grammar.terminal_symbol + ['$']
-            self.pre_first_table.setColumnCount(len(ter_list))
-            self.pre_first_table.setHorizontalHeaderLabels(ter_list)
-            self.pre_first_table.resizeColumnsToContents()
-            self.pre_first_table.resizeRowsToContents()
-            self.pre_first_table.setVerticalHeaderLabels(self.pre_forecasting.grammar.non_terminal_symbol)
-            for y, non in enumerate(self.pre_forecasting.grammar.non_terminal_symbol):
-                self.pre_first_table.insertRow(y)
-                for x, ter in enumerate(ter_list):
-                    t = self.pre_forecasting.first_set[non]
-                    if ter in t:
-                        self.pre_first_table.setItem(y, x, QTableWidgetItem('1'))
-        except Exception as e:
-            print(e)
-    '''
-    功能开始
-    '''
-    def pre_follow_start(self):
-        try:
-            # self.pre_forecasting.get_follow_set()
-            # ter_list = self.pre_forecasting.grammar.terminal_symbol + ['#']
-            self.pre_follow_table.setColumnCount(len(ter_list))
-            self.pre_follow_table.setHorizontalHeaderLabels(ter_list)
-            self.pre_follow_table.resizeColumnsToContents()
-            self.pre_follow_table.resizeRowsToContents()
-            self.pre_follow_table.setVerticalHeaderLabels(self.pre_forecasting.grammar.non_terminal_symbol)
-            # for y, non in enumerate(self.pre_forecasting.grammar.non_terminal_symbol):
-            for y in range(1, 100):
-                self.pre_follow_table.insertRow(y)
-                # for x, ter in enumerate(ter_list):
-                for x in range(1, 5):
-                    # t = self.pre_forecasting.follow_set[non]
-                    # if ter in t:
-                    self.pre_follow_table.setItem(y, x, QTableWidgetItem('2'))
-        except Exception as e:
-            print(e)
-
-    def pre_open_file(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open File", '',
-                                                  "All Files (*);;"
-                                                  "C++ Files (*.cpp *.h *.py);;"
-                                                  "Txt files (*.txt);;"
-                                                  "Python files (*.py);;"
-                                                  "HTML-Files (*.htm *.html)")
-
-        print(filename)
-        if filename:
-            try:
-                infile = QFile(filename)
-                if infile.open(QFile.ReadOnly | QFile.Text):
-                    print('read start')
-                    text = infile.readAll()
-                    text = str(text, encoding='utf-8')
-                    print(text)
-                    self.pre_edit.setPlainText(text)
-                    infile.close()
-                    return True
-            except Exception as e:
-                QMessageBox.warning(self, "Text Editor -- Save Error",
-                                    "Failed to save {0}: {1}".format(self.filename, e))
-        return False
-
-    def pre_ok_grammar(self):
-        try:
-            self.pre_forecasting = Forecasting(text=self.pre_edit.toPlainText())
-
-        except Exception as e:
-            print(e)
 
 
 if __name__ == '__main__':
@@ -229,6 +111,6 @@ if __name__ == '__main__':
     app.setOrganizationName("Acytxx")
     app.setOrganizationDomain("acytoo.com")
     app.setApplicationName("Analysis")
-    s = AnaUI()
+    s = AnaUI('1.c')
     s.show()
     app.exec_()

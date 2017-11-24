@@ -27,9 +27,6 @@ class MyMainWindow(QMainWindow):
         self.layout = QGridLayout()
         w.setObjectName("mainWindow")
         # w.setStyleSheet("background-color:black;")
-        '''
-        layout used after this???
-        '''
         w.setLayout(self.layout)
         self.setCentralWidget(w)
         self.tab = QTabWidget(w)
@@ -93,11 +90,6 @@ class MyMainWindow(QMainWindow):
 
         file_quit_action = self.create_action("&Quit", self.close,
                                               "Ctrl+Q", "Close the application")
-
-        '''
-                                             "filequit",
-        '''
-
         edit_copy_action = self.create_action("&Copy", self.edit_copy,
                                               QKeySequence.Copy,
                                               "Copy text to the clipboard")
@@ -198,8 +190,8 @@ class MyMainWindow(QMainWindow):
                     self.tab.currentWidget().e_edit.setPlainText(text)
                     inFile.close()
             except Exception as e:
-                QMessageBox.warning(self, "Text Editor -- Save Error",
-                                    "保存失败： {0}: {1}".format(self.filename, e))
+                QMessageBox.warning(self, "Text Editor -- Open Error",
+                                    "打开失败： {0}: {1}".format(self.filename, e))
                 return False
             return True
 
@@ -213,10 +205,19 @@ class MyMainWindow(QMainWindow):
 
         2017年11月17日16点10分
         '''
-        print('s',[self.filename])
+        # print('s',[self.filename])
         if not self.filename:
             return self.file_save_as()
         else:
+
+            '''
+            with open(self.filename,'w') as f:
+                my_text=self.tab.currentWidget().e_edit.toPlainText()
+                f.write(my_text)
+            return True
+        ??????????????????????
+            '''
+
             writer = QTextDocumentWriter(self.filename)
             success = writer.write(self.tab.currentWidget().e_edit.document())
             if success:
@@ -224,19 +225,20 @@ class MyMainWindow(QMainWindow):
                 print("save")
                 return True
             else:
-                QMessageBox.warning(self, "Text Editor -- Save Error",
-                                    "保存失败： {0}".format(self.filename))
+                QMessageBox.warning(self, "Text Editor -- Warning",
+                                    "因文件重名问题， 文件保存失败:( \n {0}".format(self.filename))
         return False
 
     def file_save_as(self):
         filename, _ = QFileDialog.getSaveFileName(self, "Save as...", None,
-                                            "Txt files (*.txt);;"
+                                            "C Files (*.c *.h);;"
                                             "Python files (*.py);;"
-                                            "C Files (*.c *.h);;")
+                                            "Txt files (*.txt);;")
         if filename:
-            self.filename = filename
-            print('sas', [self.filename])
+
+            # print('sas', [self.filename])
             if self.file_save():
+                self.filename = filename
                 self.tab.setTabText(self.tab.currentIndex(),QFileInfo(filename).fileName())
         return False
     '''
@@ -307,6 +309,6 @@ if __name__ == '__main__':
     app.setOrganizationDomain("acytoo.com")
     app.setApplicationName("Complier")
     f = MyMainWindow()
-    f.resize(1280, 720)
+    f.resize(1800, 1000)
     f.show()
     app.exec_()

@@ -33,6 +33,7 @@
 from PreDeal import *
 from Lexer import ERR_MSG
 from GrammarScanExtLib import INFO, QuatWithAct
+from os import mkdir
 CODE_RESULT = []
 '''
 保存四元式的结构换成字典， key为四元式出现顺序
@@ -51,6 +52,7 @@ ASSEMBLY_CODE = []
 data_fir_flag = True
 code_fir_flag = True
 variable_names = []
+Token = []
 
 # program 插入的语义动作
 def A11():
@@ -237,6 +239,8 @@ def A81():
     # index += 1
     # 省去T1算式
     QUAT_DICT[index]=QuatWithAct('if', str(e.attr['value']), '_', '_')
+    ASSEMBLY_CODE.append('CMP\t' + str(e.attr['value']))
+    ASSEMBLY_CODE.append('JA\t' + str(CODE_SIZE + 2))
     index += 1
     # dest = CODE_SIZE + 2
     f.attr['back'] = CODE_SIZE - 1
@@ -246,6 +250,7 @@ def A82():
     global index
     prev = CURRENT_CONDITION_NODE.attr['back']
     CODE_RESULT[prev] = 'GOTO ' + str(CODE_SIZE)
+    # ASSEMBLY_CODE.append('JMP ' + str(CODE_SIZE))
     QUAT_DICT[CODE_SIZE - 1]=QuatWithAct('ie', '_', '_', '_')
     index = CODE_SIZE
 
@@ -262,6 +267,8 @@ def A91():
     QUAT_DICT[index]=QuatWithAct('wh', '_', '_', '_')
     index += 1
     QUAT_DICT[index]=QuatWithAct('con', str(e.attr['value']), '_', '_')
+    ASSEMBLY_CODE.append('CMP\t' + str(e.attr['value']))
+    ASSEMBLY_CODE.append('JA\t' + str(CODE_SIZE + 2))
     index += 1
     QUAT_DICT[index]=QuatWithAct('do', 'res', '_', '_')
     index += 1
@@ -273,6 +280,7 @@ def A92():
     prev = CURRENT_CONDITION_NODE.attr['back']
     CODE_RESULT[prev] = 'GOTO ' + str(CODE_SIZE + 1)
     code_output('GOTO ' + str(prev - 1))
+    ASSEMBLY_CODE.append('JMP\t' + str(CODE_SIZE))
     QUAT_DICT[CODE_SIZE - 2]=QuatWithAct('we', '_', '_', '_')
     index = CODE_SIZE - 1
 
@@ -341,21 +349,29 @@ def print_symbol_table():
         print(t)
 
 def next_token():
+    global Token
     r = Lexer.scanner()
     while r is None:
         r = Lexer.scanner()
+    Token.append(r)
     return r
 
-def control():
+def control(name):
+    try:
+        formulas = open('./results/'+name.split('/')[-1].split('.')[0]+'_formulas.txt', 'w')
+        stack = open('./results/'+name.split('/')[-1].split('.')[0]+'_stacks.txt', 'w')
+    except FileNotFoundError:
+        mkdir('results')
+        formulas = open('./results/'+name.split('/')[-1].split('.')[0]+'_formulas.txt', 'w')
+        stack = open('./results/'+name.split('/')[-1].split('.')[0]+'_stacks.txt', 'w')
     global LAST_STACK_TOP_SYMBOL
     SYMBOL_STACK.append('#')
     SYMBOL_STACK.append('<program>')  # 《program》
     token_tuple = next_token()
     # print('The first time to run', token_tuple)
 
-    formulas = open('formulas.txt', 'w')
-    stack = open('stack.txt', 'w')
-    assem_code = open('result.asm', 'w')
+
+
     ASSEMBLY_CODE.append('\t.586')
     ASSEMBLY_CODE.append('\t.model flat, c')
 
@@ -410,8 +426,11 @@ def control():
                 continue
             # print('after ', p.right)
             if p == 'SYNC':
-                # SYNC recognized, pop Stack
-                syntax_error("sync symbol, recovering")
+                '''
+                重复定义
+                这部分代码已经不会调用了，覆盖在符号表生成那里处理了
+                '''
+                syntax_error("已覆盖")
                 LAST_STACK_TOP_SYMBOL = SYMBOL_STACK.pop()
                 stack.write(str(SYMBOL_STACK) + '\n')
                 formulas.write(str(p) + '\n')
@@ -470,19 +489,23 @@ def do_sema_actions(symbol):
 
 
 def show_ass():
+    global ASSEMBLY_CODE
     for i in ASSEMBLY_CODE:
         print(i)
 
 
 def show_Quat():
+    global QUAT_DICT
     i = 0
     for i in QUAT_DICT:
         print(QUAT_DICT[i])
+
+
 if __name__ == '__main__':
     # print(__package__)
     Pre_Deal()      # 读取文法， 可以考虑将扫描的文法分析表保存， 以欧化结构， 加快速度
     Lexer.read_source_file('1.c')   # 读取要分析的文件
-    control()
+    control('./1.c')
     print('错误信息')
     print("------------")
     show_err()
@@ -500,3 +523,6 @@ if __name__ == '__main__':
     print("------------")
 
     show_ass()
+
+    for i in Token:
+        print(i)

@@ -232,15 +232,12 @@ def Gen_Ana_Table():
             if non_terminal == p.left:
                 for symbol in p.select:
                     Analysis_Table[non_terminal][symbol] = p
-
-
         for symbol in symbol_for_str(non_terminal).follow_set:
             if is_terminal(symbol):
-                # print(symbol)
                 try:
                     p = Analysis_Table[non_terminal][symbol]
                 except KeyError:
-                    # print(symbol, '1111111111111111111111111111111111111111111111111111111')
+
                     Analysis_Table[non_terminal][symbol] = 'SYNC'
 
         for symbol in symbol_for_str(non_terminal).first_set:
@@ -248,7 +245,6 @@ def Gen_Ana_Table():
                 try:
                     p = Analysis_Table[non_terminal][symbol]
                 except KeyError:
-                    # print('2222222222222222222222222222222222222222222222222222222222')
                     Analysis_Table[non_terminal][symbol] = 'SYNC'
 
 
